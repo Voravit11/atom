@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IT Borrow System</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-logo">
+      <span>&#128187;</span>
+    </div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showPage('dashboard')">Dashboard</button>
+      <button class="nav-tab" onclick="showPage('equipment')">Equipment</button>
+      <button class="nav-tab" onclick="showPage('users')">Users</button>
+      <button class="nav-tab" onclick="showPage('borrow')">Borrow</button>
+    </div>
+  </nav>
+
+  <!-- Dashboard Page -->
+  <div id="page-dashboard" class="page active">
+    <div class="dash-grid">
+      <div class="recent-panel">
+        <h3>กิจกรรมล่าสุด</h3>
+        <div id="recent-list">
+          <p class="empty-state">ยังไม่มีกิจกรรม</p>
+        </div>
+      </div>
+      <div class="dash-right">
+        <div class="chart-card">
+          <h3 class="chart-title">สถิติการยืม-คืน</h3>
+          <div class="chart-bars" id="chart-bars">
+            <p class="empty-state" style="color:#999">ยังไม่มีข้อมูล</p>
+          </div>
+          <div class="chart-labels" id="chart-labels"></div>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-label">Equipment</div>
+            <div class="stat-val" id="stat-eq">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Users</div>
+            <div class="stat-val" id="stat-users">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Borrowed</div>
+            <div class="stat-val" id="stat-borrowed">0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Equipment Page -->
+  <div id="page-equipment" class="page">
+    <h2 class="page-title">Add Equipment</h2>
+    <div class="add-row">
+      <input type="text" id="eq-input" placeholder="ชื่ออุปกรณ์..." />
+      <button class="btn btn-green" onclick="addEquipment()">Add Equipment</button>
+    </div>
+    <div class="data-table">
+      <div class="table-head table-eq-grid">
+        <span>ID</span><span>Name</span><span>Status</span><span>Action</span>
+      </div>
+      <div id="eq-list">
+        <p class="empty-state">ยังไม่มีอุปกรณ์</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Users Page -->
+  <div id="page-users" class="page">
+    <h2 class="page-title">Add Users</h2>
+    <div class="add-row">
+      <input type="text" id="user-input" placeholder="ชื่อผู้ใช้..." />
+      <button class="btn btn-red" onclick="addUser()">Add</button>
+    </div>
+    <div class="data-table">
+      <div class="table-head table-users-grid">
+        <span>ID</span><span>Name</span>
+      </div>
+      <div id="user-list">
+        <p class="empty-state">ยังไม่มีผู้ใช้</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Borrow Page -->
+  <div id="page-borrow" class="page">
+    <div class="borrow-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>ชื่อคน</label>
+          <select id="borrow-user">
+            <option value="">-- เลือกผู้ใช้ --</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>ชื่ออุปกรณ์</label>
+          <select id="borrow-eq">
+            <option value="">-- เลือกอุปกรณ์ --</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>รายละเอียด</label>
+        <input type="text" id="borrow-detail" placeholder="รายละเอียดการยืม..." />
+      </div>
+      <button class="btn btn-gray" onclick="saveBorrow()">บันทึก</button>
+    </div>
+    <div class="data-table">
+      <div class="table-head table-borrow-grid">
+        <span>ID</span><span>ชื่อคน</span><span>อุปกรณ์</span><span>รายละเอียด</span><span>Action</span>
+      </div>
+      <div id="borrow-list">
+        <p class="empty-state">ยังไม่มีรายการยืม</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Scripts -->
+  <script src="storage.js"></script>
+  <script src="equipment.js"></script>
+  <script src="users.js"></script>
+  <script src="borrow.js"></script>
+  <script src="dashboard.js"></script>
+  <script>
+    // Init
+    renderAll();
+
+    function showPage(p) {
+      document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+      document.getElementById('page-' + p).classList.add('active');
+      const tabs = ['dashboard', 'equipment', 'users', 'borrow'];
+      document.querySelectorAll('.nav-tab')[tabs.indexOf(p)].classList.add('active');
+      if (p === 'borrow') populateBorrowSelects();
+      if (p === 'dashboard') renderDashboard();
+    }
+
+    function renderAll() {
+      renderEquipment();
+      renderUsers();
+      renderBorrow();
+      renderDashboard();
+    }
+  </script>
+</body>
+</html>
